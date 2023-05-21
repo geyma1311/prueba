@@ -187,7 +187,7 @@ export default {
 
       this.axios
         .get(
-          `http://www.omdbapi.com/?apikey=5eec5adc&s=${
+          `https://www.omdbapi.com/?apikey=5eec5adc&s=${
             this.search ? this.search : "null"
           }`
         )
