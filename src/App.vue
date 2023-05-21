@@ -1,32 +1,66 @@
 <template>
-  <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
-    <router-view/>
-  </div>
+  <v-app>
+    <v-app-bar app color="primary" dark>
+      <div class="d-flex align-center">
+        <a href="/">
+          <h1 class="white--text">PREMIUM VIDEO</h1>
+        </a>
+      </div>
+
+      <v-spacer></v-spacer>
+
+      <router-link :to="total === 0 ? '#' : '/cart'">
+        <v-btn icon class="mr-2 mt-2">
+          <v-badge color="green" :content="total.toString()">
+            <v-icon>mdi-cart-outline</v-icon>
+          </v-badge>
+        </v-btn>
+      </router-link>
+    </v-app-bar>
+
+    <v-main>
+      <router-view @updateCart="updateCart" />
+    </v-main>
+  </v-app>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+export default {
+  name: "App",
 
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
-}
+  data: () => ({
+    cart: {
+      rent: [],
+      sell: [],
+    },
+    total: 0
+  }),
+  mounted() {
+    if (localStorage.cart) {
+      this.cart = JSON.parse(localStorage.cart)
+      this.updateCart(this.cart)
+    }
+  },
+  methods: {
+    // se actualiza el carrito
+    updateCart(cart) {
+      this.cart = cart;
+      localStorage.cart = JSON.stringify(cart)
+      let rents = this.cart.sell.reduce(function (accumulator, curValue) {
+        return accumulator + parseInt(curValue.quantity);
+      }, 0);
+      let sales = this.cart.rent.reduce(function (accumulator, curValue) {
+        return accumulator + parseInt(curValue.quantity);
+      }, 0);
+      // const cant = this.cart.sell.length + this.cart.rent.length
+      this.total = sales + rents
+    },
+  },
+};
+</script>
+<style lang="scss">
+  .content {
+    width: 60%;
+    margin: 0 auto;
+  }
 </style>
